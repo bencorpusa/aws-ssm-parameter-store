@@ -1,5 +1,5 @@
 const core = require("@actions/core");
-const { SSM } = require("aws-sdk");
+const { SSM } = require("@aws-sdk/client-ssm");
 
 async function run() {
   try {
@@ -8,7 +8,6 @@ async function run() {
     // Load the AWS Region to use in SSM
     core.debug(`Setting aws-region [${core.getInput("aws-region")}]`);
     const ssm = new SSM({
-      apiVersion: "2014-11-06",
       region: core.getInput("aws-region"),
     });
     var params = {
@@ -28,7 +27,7 @@ async function run() {
       core.debug(`Setting the KeyId to ${keyId}`);
       params["KeyId"] = keyId;
     }
-    var result = await ssm.putParameter(params).promise();
+    var result = await ssm.putParameter(params);
     core.debug(
       `Parameter details Version [${result.Version}] Tier [${result.Tier}]`
     );
